@@ -1,0 +1,857 @@
+package moonYmca;
+
+import java.io.*;
+
+import java.util.StringTokenizer;
+
+import javax.swing.JOptionPane;
+
+ 
+
+public class MoonYmca
+
+{
+
+    public static void main(String[] args)
+
+    {
+
+        members mem = new members();
+
+        int selection = 0;
+
+       
+
+        mem.begin_read_member();
+
+        mem.begin_read_class();
+
+ 
+
+        while (selection!=4)
+
+        {
+
+            selection = mem.Menu();
+
+           
+
+            if (selection==1)
+
+            {
+
+                mem.Modify_member();
+
+            }
+
+            else if (selection==2)
+
+            {
+
+                mem.Modify_class();
+
+            }
+
+            else if (selection==3)
+
+            {
+
+                mem.report();
+
+            }
+
+        }
+
+ 
+
+        mem.Exit_ymca_program();        
+
+   }
+
+}
+
+ //
+
+class members{
+
+   
+
+    int class_count=-1;
+
+    int count = -1;
+
+         
+
+    int[]    memCode=new int[100];
+
+    String[] memType=new String[100];
+
+    String[] firstName =new String[100];
+
+    String[] lastName =new String[100];
+
+    int[]    age =new int[100];
+
+    String[] gender=new String[100];
+
+    int[]    regCode = new int[100];
+
+   
+
+    int    classCode[] = new int[100];
+
+    String className[] = new String[100];
+
+    String begDate[] = new String[100];
+
+   
+//
+    void begin_read_member()
+
+    {
+
+        try
+
+        {
+
+            String newLine;
+
+ 
+
+            BufferedReader member_file = new BufferedReader(new FileReader("member.dat"));
+
+ 
+
+            while ((newLine = member_file.readLine()) != null)
+
+            {
+
+                StringTokenizer delimiter = new StringTokenizer(newLine,"#");
+
+                count=count+1;
+
+                memCode[count] = Integer.parseInt(delimiter.nextToken());
+
+                memType[count] =delimiter.nextToken();
+
+                firstName[count] =delimiter.nextToken();
+
+                lastName[count] = delimiter.nextToken();
+
+                age[count] = Integer.parseInt(delimiter.nextToken());
+
+                gender[count] = delimiter.nextToken();
+
+                regCode[count] = Integer.parseInt(delimiter.nextToken());
+
+            }
+
+       
+
+            member_file.close();
+
+        }
+
+        catch(IOException error)
+
+        {
+
+            System.out.println("Error on file read " + error);
+
+        }
+
+}          
+
+           //
+
+    void begin_read_class()
+
+    {
+
+        try
+
+        {
+
+            BufferedReader class_file = new BufferedReader(new FileReader("class.dat"));
+
+ 
+
+            String newLine;
+
+            while (( newLine = class_file.readLine()) != null)
+
+            {
+
+                StringTokenizer delimiter = new StringTokenizer(newLine,"#");
+
+                class_count=class_count+1;
+
+                classCode[class_count] = Integer.parseInt(delimiter.nextToken());
+
+                className[class_count] =delimiter.nextToken();
+
+                begDate[class_count] =delimiter.nextToken();
+
+            }   
+
+ 
+
+            class_file.close();
+
+ 
+
+        }
+
+        catch(IOException error)
+
+        {
+
+            System.out.println("Error on file read " + error);
+
+        }
+
+    }
+
+       //
+
+    void Modify_member()
+
+    {
+
+        int input = 0;
+
+        String modMenu= "Modify Members:\n" +
+
+                        "1. Add Member \n" +
+
+                        "2. Delete Member \n" +
+
+                        "3. Modify Member \n" +
+
+                        "4. Exit Menu";
+
+       
+
+        input=Integer.parseInt(JOptionPane.showInputDialog(null, modMenu, "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+       
+
+        if(input == 1)
+
+        {
+
+            memCode[count+1]= Integer.parseInt(JOptionPane.showInputDialog(null, "Enter Four Digit Member Code: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+           memType[count+1] = JOptionPane.showInputDialog(null, "Enter Member Type (single,couple,family): ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+            firstName[count+1] = JOptionPane.showInputDialog(null, "Enter Legal First Name: ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+            lastName[count+1] = JOptionPane.showInputDialog(null, "Enter Legal Last Name: ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+            age[count+1]= Integer.parseInt(JOptionPane.showInputDialog(null, "Enter Age: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+            gender[count+1] = JOptionPane.showInputDialog(null, "Enter Gender: ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+            regCode[count+1] = Integer.parseInt(JOptionPane.showInputDialog(null, "Enter Three Digit Registration Code: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+           
+
+            count++;
+
+        }
+
+        else if(input ==2)
+
+        {
+
+            int delCode = 0;
+
+            int index = 0;
+
+            delCode=Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the four digit member code of record to be deleted: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+           
+
+            for(int i = 0; i < memCode.length; i++){
+
+                if(delCode == memCode[i]){
+
+                    index = i;
+
+                    System.out.println("User found.");
+
+      
+
+                    for(int j = i; j < memCode.length - 1; j++){
+
+                        memCode[j] = memCode[j+1];
+
+                    }
+
+                    System.out.println("Member Code deleted.");
+
+                   
+
+                    for(int j = i; j < memType.length - 1; j++){
+
+                        memType[j] = memType[j+1];
+
+                    }
+
+                    System.out.println("Member Type deleted.");
+
+                   
+
+                    for(int j = i; j < firstName.length - 1; j++){
+
+                        firstName[j] = firstName[j+1];
+
+                    }
+
+                    System.out.println("First Name deleted.");
+
+                   
+
+                    for(int j = i; j < lastName.length - 1; j++){
+
+                        lastName[j] = lastName[j+1];
+
+                    }
+
+                    System.out.println("Last Name deleted.");
+
+ 
+
+                    for(int j = i; j < age.length - 1; j++){
+
+                        age[j] = age[j+1];
+
+                    }
+
+                    System.out.println("Age deleted.");
+
+ 
+
+                    for(int j = i; j < gender.length - 1; j++){
+
+                        gender[j] = gender[j+1];
+
+                    }
+
+                    System.out.println("Gender deleted.");
+
+                   
+
+                    for(int j = i; j < regCode.length - 1; j++){
+
+                        regCode[j] = regCode[j+1];
+
+                    }
+
+                    System.out.println("Registration Code deleted.");  
+
+                    
+
+                    count--;
+
+                   
+
+                    break;
+
+                }
+
+            }        
+
+        }
+
+        else if(input == 3)
+
+        {         
+
+            int index = 0;
+
+            int editCode = 0;
+
+          
+
+            editCode=Integer.parseInt(JOptionPane.showInputDialog(null, "Enter the four digit member code of record to be edited:", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+            for(int i = 0; i < memCode.length; i++){
+
+                if(editCode == memCode[i]){
+
+                    index = i;
+
+                    System.out.println("User found.");
+
+                }
+
+            }
+
+           
+
+            String chooseColumn =   "What memnber information would you like to edit? \n" +
+
+                                    "1. Member Code \n" +
+
+                                    "2. Member Type \n" +
+
+                                    "3. First Name \n" +
+
+                                    "4. Last Name \n" +
+
+                                    "5. Age \n" +
+
+                                    "6. Gender \n" +
+
+                                    "7. Registration Code";
+
+                               
+
+            
+
+            editCode=Integer.parseInt(JOptionPane.showInputDialog(null, chooseColumn, "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+            
+
+            if(editCode ==1){
+
+                memCode[index] = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter new four digit member code: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+            }
+
+            else if(editCode == 2){
+
+                memType[index] = JOptionPane.showInputDialog(null, "Please enter new member type (single,couple,family): ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+            }
+
+            else if(editCode == 3){
+
+                firstName[index] = JOptionPane.showInputDialog(null, "Please enter member's legal first name: ", "Modify Members", JOptionPane.QUESTION_MESSAGE);              
+
+            }
+
+            else if(editCode == 4){
+
+                lastName[index] = JOptionPane.showInputDialog(null, "Please enter member's legal last name: ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+            }
+
+            else if(editCode == 5){
+
+                age[index] = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter member's age: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+            }
+
+            else if(editCode == 6){
+
+                gender[index] = JOptionPane.showInputDialog(null, "Please enter member's gender: ", "Modify Members", JOptionPane.QUESTION_MESSAGE);              
+
+            }
+
+            else if(editCode == 7){
+
+                regCode[index] = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter new three digit registration code: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+            }
+
+       
+
+        
+
+        }
+
+    }   
+
+    //
+
+    void Modify_class()
+
+    {
+
+       
+
+        classCode[class_count+1]= Integer.parseInt(JOptionPane.showInputDialog(null, "Enter existing or new three digit class code: ", "Add Class", JOptionPane.QUESTION_MESSAGE));  
+
+        className[class_count+1]= JOptionPane.showInputDialog(null, "Enter new class name: ", "Add Class", JOptionPane.QUESTION_MESSAGE);
+
+        begDate[class_count+1]= JOptionPane.showInputDialog(null, "Enter the beginning date (mm/dd/yy): ", "Add Class", JOptionPane.QUESTION_MESSAGE);
+
+       
+
+        class_count++;
+
+    }
+
+           
+//
+    void report()
+
+    {
+
+        int selection, i;
+
+        String value;
+
+        int intValue = 0;
+
+        String output=  "Moon Area YMCA"+"\n"+
+
+                "=================="+"\n"+
+
+                "1. Basic Member Information"+"\n"+
+
+                "2. Basic Class Information"+"\n"+
+
+                "3. List: By Gender"+"\n"+
+
+                "4. List: By Group"+"\n"+
+
+                "5. List: By Specified Class"+"\n"+
+
+                "6. List: All Classes"+"\n"+
+
+                "7. Exit Report Menu"+"\n"+
+
+                "Enter your selction > ";
+
+ 
+
+        value=JOptionPane.showInputDialog(null, output, "Input Data", JOptionPane.QUESTION_MESSAGE);
+
+ 
+
+        selection=Integer.parseInt(value);
+
+ 
+
+        while (selection != 7)
+
+        {
+
+            if (selection == 1)
+
+            {
+
+                System.out.println("Basic Member Information: ");
+
+                System.out.println("=========================");
+
+               
+
+                for (i=0; i<=count;++i)
+
+                {
+
+                    System.out.println(lastName[i]+ " "
+
+                       +firstName[i]+ " "
+
+                      +memCode[i]+" "
+
+                       +memType[i]+" "
+
+                       +age[i]+" "
+
+                       +gender[i]+" "
+
+                       +regCode[i]+" ");
+
+                }
+
+            }
+
+ 
+
+            else if (selection == 2)
+
+            {
+
+                System.out.println("Basic Class Information: ");
+
+                for (i=0; i<=class_count;++i) {
+
+                    System.out.println(""+classCode[i]+ "\n"
+
+                    +className[i]+ "\n"
+
+                    +begDate[i]+ "\n");
+
+                }
+
+            }
+
+ 
+
+            else if(selection == 3){
+
+               
+
+                value = JOptionPane.showInputDialog(null, "Please enter the gender to display (male/female): ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+               
+
+                for(i=0; i <= count; i++){
+
+                    if(gender[i].equalsIgnoreCase(value)){
+
+                        System.out.print(memCode[i] + " ");
+
+                        System.out.print(memType[i] + " ");
+
+                        System.out.print(firstName[i] + " ");
+
+                        System.out.print(lastName[i] + " ");
+
+                        System.out.print(age[i] + " ");
+
+                        System.out.print(gender[i] + " ");
+
+                        System.out.print(regCode[i] + "\n");
+
+                    }
+
+                }
+
+            }
+
+           
+
+            else if(selection == 4){
+
+               
+
+                value = JOptionPane.showInputDialog(null, "Please enter the member type to display (single, couple, family): ", "Modify Members", JOptionPane.QUESTION_MESSAGE);
+
+               
+
+                for(i=0; i <= count; i++){
+
+                    if(memType[i].equalsIgnoreCase(value)){
+
+                        System.out.print(memCode[i] + " ");
+
+                        System.out.print(memType[i] + " ");
+
+                        System.out.print(firstName[i] + " ");
+
+                        System.out.print(lastName[i] + " ");
+
+                        System.out.print(age[i] + " ");
+
+                        System.out.print(gender[i] + " ");
+
+                        System.out.print(regCode[i] + "\n");
+
+                    }
+
+                }
+
+            } 
+
+            
+
+            else if(selection == 5){
+
+               
+
+                intValue = Integer.parseInt(JOptionPane.showInputDialog(null, "Please enter specified class's three digit class code: ", "Modify Members", JOptionPane.QUESTION_MESSAGE));
+
+               
+
+                for(i=0; i <= count; i++){
+
+                    if(regCode[i] == intValue){
+
+                        System.out.print(memCode[i] + " ");
+
+                        System.out.print(memType[i] + " ");
+
+                        System.out.print(firstName[i] + " ");
+
+                        System.out.print(lastName[i] + " ");
+
+                        System.out.print(age[i] + " ");
+
+                        System.out.print(gender[i] + " ");
+
+                        System.out.print(regCode[i] + "\n");
+
+                    }
+
+                }
+
+            }
+
+           
+
+            else if(selection == 6){
+
+                for(int club = 0; club < class_count; club++){
+
+                    System.out.println("\n---------------------------------------\n");
+
+                    System.out.println("Code: " + classCode[club]);
+
+                    System.out.println("Name: " + className[club]);
+
+                    System.out.println("Date: " + begDate[club]);
+
+                    System.out.println("Roster: ");
+
+                        for(i=0; i <= count; i++){
+
+                            if(regCode[i] == classCode[club]){
+
+                                System.out.print(memCode[i] + " ");
+
+                                System.out.print(memType[i] + " ");
+
+                                System.out.print(firstName[i] + " ");
+
+                                System.out.print(lastName[i] + " ");
+
+                                System.out.print(age[i] + " ");
+
+                                System.out.print(gender[i] + " ");
+
+                                System.out.print(regCode[i] + "\n");
+
+                            }
+
+                        }
+
+                }
+
+            }
+
+ 
+
+            value=JOptionPane.showInputDialog(null, output, "Input Data", JOptionPane.QUESTION_MESSAGE);
+
+ 
+
+            selection=Integer.parseInt(value);
+
+        }
+
+    }   
+
+    //        
+
+    int Menu()
+
+    {
+
+        int selection;
+
+        String words,data;
+
+        words = "Moon Area YMCA" + "\n" + "\n" +
+
+                "1. Add/Modify Member Information" + "\n" +
+
+                "2. Add/Modify Registrations" + "\n" +
+
+                "3. Report Menu" + "\n" +
+
+                "4. Exit System" + "\n" + "\n" +
+
+                "Please Make your selection>";
+
+       
+
+        data =  JOptionPane.showInputDialog(null,words,"Moon Area YMCA ",JOptionPane.QUESTION_MESSAGE );
+
+        selection = Integer.parseInt(data);
+
+        return selection;
+
+    }
+
+ //
+
+    void Exit_ymca_program()
+
+    {
+
+ 
+
+        int i;
+
+        
+
+        try
+
+        {
+
+            BufferedWriter mem_data = new BufferedWriter(new FileWriter("mem_output.dat"));
+
+            for (i=0; i<=count; ++i)
+
+            {
+
+                mem_data.write(memCode[i] + "#" + memType[i] + "#" + firstName[i] + "#" + lastName[i] + "#" + age[i]+ "#" + gender[i]+ "#" + regCode[i]);
+
+                mem_data.newLine();
+
+            }
+
+          
+
+            mem_data.close();
+
+        }
+
+        catch (IOException error)
+
+        {
+
+            System.out.println("Error on mem_output write " + error);
+
+        }
+
+       
+
+        try
+
+        {
+
+            BufferedWriter class_data = new BufferedWriter(new FileWriter("class_output.dat"));
+
+            for (i=0; i<= class_count; ++i)
+
+            {
+
+                class_data.write(classCode[i] + "#" + className[i] + "#" + begDate[i]);
+
+                class_data.newLine();
+
+            }
+
+          
+
+            class_data.close();
+
+        }
+
+        catch (IOException error)
+
+        {
+
+            System.out.println("Error on mem_output write " + error);
+
+        }
+
+   
+
+   
+
+        System.out.println("Exiting YMCA program.");
+
+        System.exit(0); 
+
+    }
+
+}
